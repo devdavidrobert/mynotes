@@ -71,12 +71,31 @@ class _LoginViewState extends State<LoginView> {
                 devtools.log(userCredential.toString());
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'invalid-credential') {
-                  devtools.log(
+                  await showErrorDialog(
+                    context,
                     'Wrong credentials',
                   );
                 } else if (e.code == 'network-request-failed') {
-                  devtools.log(
+                  await showErrorDialog(
+                    context,
                     'No network connectivity',
+                  );
+                } else if (e.code == 'invalid-email') {
+                  await showErrorDialog(
+                    context,
+                    'Invalid Email',
+                  );
+                } else {
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
+                }
+              } catch (e) {
+                {
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
                   );
                 }
               }
@@ -95,4 +114,29 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+}
+
+Future<void> showErrorDialog(
+  BuildContext context,
+  String text,
+) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('An error occurred'),
+        content: Text(text),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'OK',
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
