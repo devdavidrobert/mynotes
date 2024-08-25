@@ -66,6 +66,11 @@ class _RegisterViewState extends State<RegisterView> {
                   email: email,
                   password: password,
                 );
+
+                final user = FirebaseAuth.instance.currentUser;
+
+                await user?.sendEmailVerification();
+
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   verifyEmailRoute,
                   (route) => false,
@@ -101,9 +106,8 @@ class _RegisterViewState extends State<RegisterView> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
+              Navigator.of(context).pushNamed(
                 loginRoute,
-                (route) => false,
               );
             },
             child: const Text(
